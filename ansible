@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: ensure nginx is at the latest version
+      apt: name=nginx state=latest
+      become: yes
+    - name: start nginx
+      service:
+          name: nginx
+          state: started
+      become_method: sudo
+    - name: Copy using the 'content' for inline data
+      copy:
+        content: '<html><body>Hello World from <!--# echo var="hostname" default="unknown_host" --></body></html>'
+        dest: /var/www/html/index.nginx-debian.html
+	  
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
